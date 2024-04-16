@@ -2,14 +2,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Read in the data and separate the columns
 data_df = pd.read_csv("different_partitions_data.csv")
-
-fig, axs = plt.subplots(3, 1, figsize=(10, 8))
-
 num_samples = data_df["num_samples"]
 mse = data_df["mse"]
 r2 = data_df["r2"]
 mae = data_df["mae"]
+
+# Plot the MSE, R2, and MAE for each subset of the training data
+fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 
 # MSE
 axs[0].plot(num_samples, mse, label="MSE", color="blue")

@@ -7,17 +7,15 @@ from sklearn.metrics import r2_score, mean_absolute_error,mean_squared_error
 from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import cross_val_score, KFold, train_test_split, GridSearchCV
-
-from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.ensemble import RandomForestRegressor,GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
-
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Activation, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
-
 import pickle as pkl
+
+# Source: https://github.com/dppant/magnetism-prediction/tree/main
 
 # read csv
 train = pd.read_csv('../train_test/train.csv', header = 0)
@@ -29,7 +27,6 @@ X_train = train.drop(columns = ['M'])
 
 y_test = test['M']
 X_test = test.drop(columns = ['M'])
-
 
 # data normalization
 from sklearn.preprocessing import StandardScaler

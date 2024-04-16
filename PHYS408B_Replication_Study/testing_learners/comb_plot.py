@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Input the name of the predictions csv file to plot it against the true value
 learners = "('svm',)"
 y_test = pd.read_csv("y_test.csv")
 y_pred = pd.read_csv(f"../comb_csv_files/{learners}_test_predictions.csv")
@@ -20,9 +21,10 @@ y_pred_sorted.reset_index(drop=True, inplace=True)
 y_test_sorted.drop(columns=['Unnamed: 0'], inplace=True)
 y_pred_sorted.drop(columns=['Unnamed: 0'], inplace=True)
 
-print(y_test_sorted[:10])
-print(y_pred_sorted[:10])
+# print(y_test_sorted[:10])
+# print(y_pred_sorted[:10])
 
+# Plot
 fig = plt.figure(figsize=(6, 3), dpi=200)
 ax = fig.add_subplot(111)
 

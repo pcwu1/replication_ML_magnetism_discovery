@@ -7,16 +7,34 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor,GradientBoostingRegressor
 from sklearn.neighbors import KNeighborsRegressor
 import pickle as pkl
-from imbalance_funct import imbalance_check
+from distribution_funct import distribution_check
 from train_ann_funct import train_ann
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+# The training procedure (preprocessing and inside the for loop) is the same as the original paper
+# Source: https://github.com/dppant/magnetism-prediction/tree/main
 
 # read csv
 train = pd.read_csv('../train_test/train.csv', header = 0)
 test = pd.read_csv('../train_test/test.csv', header = 0)
 
+# list for cols to scale
+cols_to_scale = ['Fe','S1','S2','S3','S4','Ni','Co','Cr','Mn','Se','S','Te']
+
+#create and fit scaler using train data
+scaler = StandardScaler()
+scaler.fit(train[cols_to_scale])
+
+#scale trained data
+train[cols_to_scale] = scaler.transform(train[cols_to_scale])
+
+# scale test data
+test[cols_to_scale] = scaler.transform(test[cols_to_scale])
+
 # % of the full training set of 3695 samples
-partition_n = [int(train.shape[0] * 0.9),
+partition_n = [train.shape[0],
+               int(train.shape[0] * 0.9),
                int(train.shape[0] * 0.8),
                int(train.shape[0] * 0.7),
                int(train.shape[0] * 0.6),
@@ -36,8 +54,8 @@ for n in partition_n:
 # Ensure the different sized datasets are balanced
 train_sets_data = []
 for set in train_sets:
-    temp_data = imbalance_check(train, set, save_name=f"{set.shape[0]}_imbalance", save=True)
-    print(f"{set.shape[0]} samples dataset imbalance check:")
+    temp_data = distribution_check(train, set, save_name=f"{set.shape[0]}_distribution", save=True)
+    print(f"{set.shape[0]} samples dataset distribution check:")
     print(temp_data, "\n")
     train_sets_data.append(temp_data)
 
@@ -127,35 +145,35 @@ for set in train_sets:
     temp_dict["r2"] = r2
     temp_dict["mae"] = mae
     data_results.append(temp_dict)
-    #
-    # # Sort both lists by ascending order by y_test
-    # y_test_sorted = y_test_stacking.sort_values()
-    # final_prediction_series = pd.Series(final_prediction)
-    # final_prediction_sorted = final_prediction_series.reindex(y_test_sorted.index)
-    #
-    # # Reset the index
-    # y_test_sorted.reset_index(drop=True, inplace=True)
-    # final_prediction_sorted.reset_index(drop=True, inplace=True)
-    #
-    # # Drop old indices
-    # y_test_sorted.drop(columns=['Unnamed: 0'], inplace=True)
-    # final_prediction_sorted.drop(columns=['Unnamed: 0'], inplace=True)
-    #
-    # fig = plt.figure(figsize=(12, 6), dpi=600)
-    # ax = fig.add_subplot(111)
-    #
-    # ax.axvline(x=25, color='green', linestyle='--')
-    # ax.axvline(x=332, color='green', linestyle='--')
-    #
-    # ax.set_title(f"{set.shape[0]} samples predictions")
-    # ax.set_xlabel('Sample Number')
-    # ax.set_ylabel('Magnetism')
-    #
-    # ax.plot(y_test_sorted, 'r', label="Actual Value", linewidth=0.5)
-    # ax.plot(final_prediction_sorted, label="Predicted Value", linewidth=0.5)
-    # ax.legend()
-    #
-    # fig.savefig(f"../images/output/{set.shape[0]}_output.svg", dpi=1200)
+
+    # Sort both lists by ascending order by y_test
+    y_test_sorted = y_test_stacking.sort_values()
+    final_prediction_series = pd.Series(final_prediction)
+    final_prediction_sorted = final_prediction_series.reindex(y_test_sorted.index)
+
+    # Reset the index
+    y_test_sorted.reset_index(drop=True, inplace=True)
+    final_prediction_sorted.reset_index(drop=True, inplace=True)
+
+    # Drop old indices
+    y_test_sorted.drop(columns=['Unnamed: 0'], inplace=True)
+    final_prediction_sorted.drop(columns=['Unnamed: 0'], inplace=True)
+
+    fig = plt.figure(figsize=(12, 6), dpi=600)
+    ax = fig.add_subplot(111)
+
+    ax.axvline(x=25, color='green', linestyle='--')
+    ax.axvline(x=332, color='green', linestyle='--')
+
+    ax.set_title(f"{set.shape[0]} samples predictions")
+    ax.set_xlabel('Sample Number')
+    ax.set_ylabel('Magnetism')
+
+    ax.plot(y_test_sorted, 'r', label="Actual Value", linewidth=0.5)
+    ax.plot(final_prediction_sorted, label="Predicted Value", linewidth=0.5)
+    ax.legend()
+
+    fig.savefig(f"../images/output/{set.shape[0]}_output.svg", dpi=1200)
 
 results_df = pd.DataFrame(data_results)
 path = "different_partitions_data.csv"

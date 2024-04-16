@@ -8,6 +8,8 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
+# The training procedure is taken from: https://github.com/dppant/magnetism-prediction/tree/main
+
 # define model
 def train_ann(X_train, y_train, X_test, y_test):
     model = Sequential()
@@ -33,18 +35,6 @@ def train_ann(X_train, y_train, X_test, y_test):
     print("mae", mae)
     return model
 
-# # Read in the dataset
-# train = pd.read_csv('../train_test/train.csv', header = 0)
-# test = pd.read_csv('../train_test/test.csv', header = 0)
-#
-# # Split the datasets
-# y_train = train['M']
-# X_train = train.drop(columns = ['M'])
-#
-# y_test = test['M']
-# X_test = test.drop(columns = ['M'])
-#
-# train_ann(X_train, y_train, X_test, y_test)
 
 
 

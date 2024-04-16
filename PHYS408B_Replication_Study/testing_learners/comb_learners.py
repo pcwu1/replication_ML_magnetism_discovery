@@ -12,6 +12,8 @@ from tensorflow.keras.models import Sequential, load_model
 import pickle as pkl
 import tensorflow as tf
 
+# Preprocessing and training loop is from: https://github.com/dppant/magnetism-prediction/tree/main
+
 # To ensure reproducibility
 np.random.seed(42)
 tf.random.set_seed(42)
@@ -117,7 +119,7 @@ test_features['target'] = np.array(y_test)
 # Generate column combinations
 combinations_list = []
 learners = features[['rf','svm', 'knn', 'ann', 'dt', 'xgb']]
-for num in range(1, 7):
+for num in range(2, 7):
     column_combinations = list(combinations(learners.columns, num))
     combinations_list.extend(column_combinations)
 
